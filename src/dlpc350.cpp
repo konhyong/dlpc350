@@ -188,23 +188,8 @@ std::unique_ptr<DisplayMode> getDisplayMode() {
  * CMD2 : 0x1A, CMD3 : 0x1B, Param : 1
  */
 bool setDisplayMode(DisplayMode mode) {
-  auto displayMode = getDisplayMode();
-
-  if (*displayMode == DisplayMode::PATTERN) {
-    auto patternSequenceStatus = getPatternSequenceStatus();
-    if (*patternSequenceStatus != PatternSequenceStatus::STOP) {
-      setPatternSequenceStatus(PatternSequenceStatus::STOP);
-    }
-    // may need to wait two frame periods after sending stop
-    // may need to repeat check until stopped with one frame wait each
-  }
-
-  if (*displayMode != mode) {
-    auto result = sendSetMessage<uint8_t>(0x1A1B, static_cast<uint8_t>(mode));
-    return (result != nullptr);
-  }
-
-  return true;
+  auto result = sendSetMessage<uint8_t>(0x1A1B, static_cast<uint8_t>(mode));
+  return (result != nullptr);
 }
 
 /**

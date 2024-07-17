@@ -122,7 +122,7 @@ struct Pattern {
     uint32_t value;
     struct {
       TriggerType triggerType : 2;
-      uint8_t patternNumber : 6;
+      uint8_t patternIndex : 6;
       uint8_t bitDepth : 4;
       LEDSelect ledSelect : 4;
       bool invertPattern : 1;
@@ -134,10 +134,10 @@ struct Pattern {
   };
 
   Pattern() : value{0} {}
-  Pattern(TriggerType _triggerType, uint8_t _patternNumber, uint8_t _bitDepth,
+  Pattern(TriggerType _triggerType, uint8_t _patternIndex, uint8_t _bitDepth,
           LEDSelect _ledSelect, bool _invertPattern, bool _insertBlack,
           bool _bufferSwap, bool _triggerOutPrevious)
-      : triggerType{_triggerType}, patternNumber{_patternNumber},
+      : triggerType{_triggerType}, patternIndex{_patternIndex},
         bitDepth{_bitDepth}, ledSelect{_ledSelect},
         invertPattern{_invertPattern}, insertBlack{_insertBlack},
         bufferSwap{_bufferSwap}, triggerOutPrevious{_triggerOutPrevious} {}
@@ -155,14 +155,14 @@ public:
                   bool invertPattern = false, bool insertBlack = false,
                   bool triggerOutPrevious = false) {
 
-    uint8_t patternNumber = static_cast<uint8_t>(patternType);
+    uint8_t patternIndex = static_cast<uint8_t>(patternType);
 
-    assert(patternNumber <= 24);
+    assert(patternIndex <= 24);
     assert(bitDepth <= 8);
 
     bool bufferSwap = (sizePattern() == 0) ? true : false;
 
-    Pattern pattern(triggerType, patternNumber, bitDepth, ledSelect,
+    Pattern pattern(triggerType, patternIndex, bitDepth, ledSelect,
                     invertPattern, insertBlack, bufferSwap, triggerOutPrevious);
 
     addPattern(pattern);

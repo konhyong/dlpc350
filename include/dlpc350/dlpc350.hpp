@@ -175,11 +175,13 @@ union PatternSequenceValidation {
     bool invalidTriggerOut1 : 1;
     bool invalidPostVector : 1;
     bool invalidPeriodDifference : 1;
-    uint8_t : 3;
+    uint8_t : 2;
+    bool busy : 1;
   };
   PatternSequenceValidation() : value{0} {}
   PatternSequenceValidation(uint8_t _value) : value(_value) {}
   inline bool isValid() { return (value & ((1 << 5) - 1)) == 0; }
+  inline bool isReady() { return !busy; }
 };
 
 enum class PatternTriggerMode : uint8_t {

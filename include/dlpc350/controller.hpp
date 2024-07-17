@@ -12,7 +12,7 @@
 namespace DLPC350 {
 
 /// @brief Number of max possible retries on configuration attempt
-constexpr unsigned int maxRetries = 5;
+constexpr unsigned int maxRetries = 10;
 
 /// @brief Contains Projector status and index information
 struct Projector {
@@ -123,15 +123,6 @@ protected:
   /// @param patternSequence  Reference to pattern sequence object
   /// @return True on success
   bool startPatternSequenceSingle(PatternSequence &patternSequence);
-
-  /// @brief Stop pattern sequence on a single projector.
-  /// @return True on success
-  inline bool stopPatternSequenceSingle();
-
-  /// @brief Send pattern and configuration data to the DLPC350.
-  /// @param patternSequence Reference to pattern sequence object
-  /// @return True on success
-  bool sendPatternSequenceSingle(PatternSequence &patternSequence);
 
   /// @brief Validate the current pattern configured on the DLPC350. Expects the
   /// pattern data and the related configuration to be already set.
