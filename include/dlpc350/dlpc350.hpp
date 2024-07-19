@@ -263,7 +263,8 @@ bool setDisplayMode(DisplayMode mode);
 std::unique_ptr<GammaCorrection> getGammaCorrection();
 bool setGammaCorrection(bool enable, bool degammaTable = false);
 
-std::unique_ptr<PatternSequenceValidation> validatePatternSequence();
+std::unique_ptr<PatternSequenceValidation> startPatternValidation();
+std::unique_ptr<PatternSequenceValidation> checkPatternValidation();
 
 std::unique_ptr<PatternTriggerMode> getPatternTriggerMode();
 bool setPatternTriggerMode(PatternTriggerMode mode);

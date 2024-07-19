@@ -212,10 +212,19 @@ bool setGammaCorrection(bool enable, bool degammaTable) {
 }
 
 /**
- * validatePatternSequence
+ * startPatternValidation
+ * CMD2 : 0x1A, CMD3 : 0x1A, Param : 1 // dummy byte
+ */
+std::unique_ptr<PatternSequenceValidation> startPatternValidation() {
+  auto result = sendSetMessage<PatternSequenceValidation>(0x1A1A, 0x00);
+  return std::make_unique<PatternSequenceValidation>(*result.get());
+}
+
+/**
+ * checkPatternValidation
  * CMD2 : 0x1A, CMD3 : 0x1A
  */
-std::unique_ptr<PatternSequenceValidation> validatePatternSequence() {
+std::unique_ptr<PatternSequenceValidation> checkPatternValidation() {
   auto result = sendGetMessage<PatternSequenceValidation>(0x1A1A);
   return std::make_unique<PatternSequenceValidation>(*result.get());
 }

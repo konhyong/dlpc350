@@ -3,6 +3,7 @@
 
 #include "usb.hpp"
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <utility>
 
@@ -10,7 +11,8 @@ namespace DLPC350 {
 
 namespace Internal {
 constexpr size_t maxMessageDataSize = 512;
-};
+constexpr bool verbose = false;
+}; // namespace Internal
 
 struct Message {
   enum class Type : bool { WRITE = 0, READ = 1 };
@@ -113,6 +115,15 @@ using MessageData = std::unique_ptr<T, std::default_delete<T[]>>;
 template <typename T = uint8_t> extern MessageData<T> transact(Message &msg) {
   int32_t result = write(msg);
 
+  if (Internal::verbose) {
+    std::cout << "W(" << msg.length << "): ";
+    for (int i = 0; i < msg.length; ++i) {
+      std::cout << std::hex << std::setw(4)
+                << static_cast<unsigned int>(msg.data[i]) << " ";
+    }
+    std::cout << std::endl;
+  }
+
   if (msg.flags.reply) {
     if (result <= 0) {
       std::cerr << "Failed to send message" << std::endl;
@@ -133,6 +144,15 @@ template <typename T = uint8_t> extern MessageData<T> transact(Message &msg) {
 
     MessageData<T> ret(new T[USB::packetSize]);
     memcpy(ret.get(), received->data, USB::packetSize);
+
+    if (Internal::verbose) {
+      std::cout << "R(" << received->length << "): ";
+      for (int i = 0; i < received->length; ++i) {
+        std::cout << std::hex << std::setw(4)
+                  << static_cast<unsigned int>(received->data[i]) << " ";
+      }
+      std::cout << std::endl;
+    }
 
     return ret;
   }

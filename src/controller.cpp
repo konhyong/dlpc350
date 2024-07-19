@@ -199,17 +199,38 @@ bool Controller::startPatternSequence(PatternSequence &patternSequence) {
 }
 
 bool Controller::startPatternSequenceSingle(PatternSequence &patternSequence) {
-  Controller::setDisplayModeSingle(DisplayMode::PATTERN);
+  if (!Controller::setDisplayModeSingle(DisplayMode::PATTERN)) {
+    return false;
+  }
 
-  DLPC350::setPatternDataSource(PatternDataSource::EXTERNAL);
-  DLPC350::configurePatternSequence(patternSequence);
-  DLPC350::setPatternPeriod(patternSequence.getExposure(),
-                            patternSequence.getPeriod());
-  DLPC350::setPatternTriggerMode(PatternTriggerMode::MODE0);
+  if (!DLPC350::setPatternDataSource(PatternDataSource::EXTERNAL)) {
+    std::cerr << "[Controller] Failed to set pattern data source" << std::endl;
+    return false;
+  }
+  if (!DLPC350::configurePatternSequence(patternSequence)) {
+    std::cerr << "[Controller] Failed to configure pattern sequence"
+              << std::endl;
+    return false;
+  }
+  if (!DLPC350::setPatternPeriod(patternSequence.getExposure(),
+                                 patternSequence.getPeriod())) {
+    std::cerr << "[Controller] Failed to set pattern period" << std::endl;
+    return false;
+  }
+  if (!DLPC350::setPatternTriggerMode(PatternTriggerMode::MODE0)) {
+    std::cerr << "[Controller] Failed to set pattern trigger mode" << std::endl;
+    return false;
+  }
 
-  DLPC350::sendPatternDisplayLUT(patternSequence);
+  if (!DLPC350::sendPatternDisplayLUT(patternSequence)) {
+    std::cerr << "[Controller] Failed to send pattern sequence to LUT"
+              << std::endl;
+    return false;
+  }
 
-  Controller::validatePatternSequenceSingle();
+  if (!Controller::validatePatternSequenceSingle()) {
+    return false;
+  }
 
   return Controller::setPatternStatusSingle(PatternStatus::START);
 }
@@ -238,16 +259,26 @@ bool Controller::stopPatternSequence() {
 bool Controller::validatePatternSequenceSingle() {
   Controller::setPatternStatusSingle(PatternStatus::STOP);
 
-  DLPC350::validatePatternSequence();
-  std::this_thread::sleep_for(300ms);
+  DLPC350::startPatternValidation();
+
+  auto checkBusy = DLPC350::checkPatternValidation();
+  if (checkBusy->isReady()) {
+    std::cerr << "[Controller] Validation command not executing" << std::endl;
+    return false;
+  }
 
   for (int i = 0; i < maxRetries; ++i) {
-    auto validation = DLPC350::validatePatternSequence();
-    if (validation->isReady() && validation->isValid()) {
-      std::cout << "[Controller] Pattern Validated" << std::endl;
-      return true;
+    auto validation = DLPC350::checkPatternValidation();
+    if (validation->isReady()) {
+      if (validation->isValid()) {
+        std::cout << "[Controller] Pattern Validated" << std::endl;
+        return true;
+      } else {
+        std::cerr << "[Controller] Pattern failed to validate" << std::endl;
+        return false;
+      }
     }
-    std::this_thread::sleep_for(1000ms);
+    std::this_thread::sleep_for(100ms);
   }
 
   std::cerr << "[Controller] Exceed max retries on validate" << std::endl;
