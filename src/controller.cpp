@@ -21,6 +21,8 @@ bool Controller::open() {
     projectors.emplace_back(i);
   }
 
+  Controller::sync();
+
   return true;
 }
 
@@ -34,6 +36,65 @@ void Controller::close() {
 Projector &Controller::getProjector(unsigned int index) {
   assert(index < deviceNum());
   return projectors[index];
+}
+
+void Controller::sync() {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return;
+  }
+
+  for (auto &projector : projectors) {
+    if (projector.controlled) {
+      USB::select(projector.index);
+
+      projector.powerMode = *DLPC350::getPowerMode();
+      projector.ledCurrent = *DLPC350::getLEDCurrent();
+      projector.displayMode = *DLPC350::getDisplayMode();
+      projector.patternStatus = *DLPC350::getPatternStatus();
+
+      projector.hardwareStatus = *DLPC350::getHardwareStatus();
+      projector.systemStatus = *DLPC350::getSystemStatus();
+      projector.mainStatus = *DLPC350::getMainStatus();
+    }
+  }
+}
+
+bool Controller::softwareReset() {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return false;
+  }
+
+  for (auto &projector : projectors) {
+    if (projector.controlled) {
+      USB::select(projector.index);
+
+      if (!DLPC350::softwareReset()) {
+        std::cerr << "[Controller] Unable to send reset message" << std::endl;
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+void Controller::updateStatus() {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return;
+  }
+
+  for (auto &projector : projectors) {
+    if (projector.controlled) {
+      USB::select(projector.index);
+
+      projector.hardwareStatus = *DLPC350::getHardwareStatus();
+      projector.systemStatus = *DLPC350::getSystemStatus();
+      projector.mainStatus = *DLPC350::getMainStatus();
+    }
+  }
 }
 
 bool Controller::setPowerMode(PowerMode powerMode) {
@@ -261,6 +322,50 @@ bool Controller::setLEDCurrent(unsigned int index, LEDCurrent ledCurrent) {
 
   std::this_thread::sleep_for(200ms);
   return true;
+}
+
+void Controller::printStatus() {
+  for (auto &projector : projectors) {
+    std::cout << "[Projector " << projector.index << "]" << std::endl;
+    std::cout << " controlled: " << projector.controlled << std::endl;
+    std::cout << " powerMode: " << static_cast<bool>(projector.powerMode)
+              << std::endl;
+    std::cout << " ledCurrent: "
+              << static_cast<unsigned int>(projector.ledCurrent.red) << ", "
+              << static_cast<unsigned int>(projector.ledCurrent.green) << ", "
+              << static_cast<unsigned int>(projector.ledCurrent.blue)
+              << std::endl;
+    std::cout << " displayMode: " << static_cast<bool>(projector.displayMode)
+              << std::endl;
+    std::cout << " patternStatus: "
+              << static_cast<unsigned int>(projector.patternStatus)
+              << std::endl;
+
+    std::cout << "\n HardwareStatus) " << std::endl;
+    std::cout << "  initError: " << projector.hardwareStatus.initError
+              << std::endl;
+    std::cout << "  DRCError: " << projector.hardwareStatus.DRCError
+              << std::endl;
+    std::cout << "  forcedSwap: " << projector.hardwareStatus.forcedSwap
+              << std::endl;
+    std::cout << "  sequenceAbort: " << projector.hardwareStatus.sequenceAbort
+              << std::endl;
+    std::cout << "  sequenceError: " << projector.hardwareStatus.sequenceError
+              << std::endl;
+
+    std::cout << "\n SystemStatus) " << std::endl;
+    std::cout << "  memoryTest: " << projector.systemStatus.memoryTest
+              << std::endl;
+
+    std::cout << "\n MainStatus) " << std::endl;
+    std::cout << "  DMDParked: " << projector.mainStatus.DMDParked << std::endl;
+    std::cout << "  sequenceRunning: " << projector.mainStatus.sequenceRunning
+              << std::endl;
+    std::cout << "  bufferFrozen: " << projector.mainStatus.bufferFrozen
+              << std::endl;
+    std::cout << "  gammaCorrection: " << projector.mainStatus.gammaCorrection
+              << std::endl;
+  }
 }
 
 }; // namespace DLPC350

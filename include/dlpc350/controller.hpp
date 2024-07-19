@@ -22,6 +22,10 @@ struct Projector {
   LEDCurrent ledCurrent;
   DisplayMode displayMode;
   PatternStatus patternStatus;
+  
+  HardwareStatus hardwareStatus;
+  SystemStatus systemStatus;
+  MainStatus mainStatus;
 
   Projector()
       : index{0}, powerMode{PowerMode::NORMAL}, ledCurrent{0},
@@ -63,6 +67,16 @@ struct Controller {
   /// @return Reference to the Projector
   Projector &getProjector(unsigned int index);
 
+  /// @brief Sync the controller with the projectors
+  void sync();
+
+  /// @brief Perform software reset on all controlled projectors
+  /// @return True on success
+  bool softwareReset();
+
+  /// @brief Update hardware/main/system status of the projectors
+  void updateStatus();
+
   /// @brief Set power mode on projectors. Waits 2000ms to finish switching.
   /// @param powerMode STANDBY(true) / NORMAL(false)
   /// @return True on success
@@ -100,7 +114,9 @@ struct Controller {
   /// @brief Prints all list of connected devices
   inline void printDevices() { USB::printDevices(); }
 
-  // void showStatus();
+  /// @brief Prints all the status of connected devices
+  void printStatus();
+
   // void showVersion();
 
 protected:
