@@ -22,7 +22,7 @@ struct Projector {
   LEDCurrent ledCurrent;
   DisplayMode displayMode;
   PatternStatus patternStatus;
-  
+
   HardwareStatus hardwareStatus;
   SystemStatus systemStatus;
   MainStatus mainStatus;
@@ -86,6 +86,10 @@ struct Controller {
   /// @param displayMode PATTERN(true) / VIDEO(false)
   /// @return True on success
   bool setDisplayMode(DisplayMode displayMode);
+
+  /// @brief Start video mode on all controlled projectors
+  /// @return True on success
+  bool startVideoMode();
 
   /// @brief Start pattern sequence on all controlled projectors. Should create
   /// necessary pattern sequence object and add patterns prior to calling this

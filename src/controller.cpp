@@ -140,9 +140,6 @@ bool Controller::setDisplayMode(DisplayMode displayMode) {
     }
   }
 
-  std::cout << "[Controller] Set Display Mode: "
-            << ((displayMode == DisplayMode::VIDEO) ? "Video" : "Pattern")
-            << std::endl;
   return true;
 }
 
@@ -153,7 +150,9 @@ bool Controller::setDisplayModeSingle(DisplayMode displayMode) {
   if (*currentDisplayMode == DisplayMode::PATTERN) {
     auto patternStatus = DLPC350::getPatternStatus();
     if (*patternStatus != PatternStatus::STOP) {
-      setPatternStatusSingle(PatternStatus::STOP);
+      if (!Controller::setPatternStatusSingle(PatternStatus::STOP)) {
+        return false;
+      }
     }
   }
 
@@ -177,6 +176,11 @@ bool Controller::setDisplayModeSingle(DisplayMode displayMode) {
   return false;
 }
 
+bool Controller::startVideoMode() {
+  std::cout << "[Controller] Set display mode: Video" << std::endl;
+  return Controller::setDisplayMode(DisplayMode::VIDEO);
+}
+
 bool Controller::startPatternSequence(PatternSequence &patternSequence) {
   if (projectors.empty()) {
     std::cout << "[Controller] No projectors connected" << std::endl;
@@ -194,7 +198,8 @@ bool Controller::startPatternSequence(PatternSequence &patternSequence) {
       projector.patternStatus = PatternStatus::START;
     }
   }
-  std::cout << "[Controller] Pattern sequence started" << std::endl;
+
+  std::cout << "[Controller] Set display mode: Pattern" << std::endl;
   return true;
 }
 
@@ -263,7 +268,8 @@ bool Controller::validatePatternSequenceSingle() {
 
   auto checkBusy = DLPC350::checkPatternValidation();
   if (checkBusy->isReady()) {
-    std::cerr << "[Controller] Validation command not executing" << std::endl;
+    std::cerr << "[Controller] Validation command not executed properly"
+              << std::endl;
     return false;
   }
 
@@ -271,7 +277,6 @@ bool Controller::validatePatternSequenceSingle() {
     auto validation = DLPC350::checkPatternValidation();
     if (validation->isReady()) {
       if (validation->isValid()) {
-        std::cout << "[Controller] Pattern Validated" << std::endl;
         return true;
       } else {
         std::cerr << "[Controller] Pattern failed to validate" << std::endl;
