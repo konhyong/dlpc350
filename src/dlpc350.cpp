@@ -257,19 +257,19 @@ bool setPatternDataSource(PatternDataSource input) {
 }
 
 /**
- * getPatternSequenceStatus
+ * getPatternStatus
  * CMD2 : 0x1A, CMD3 : 0x24
  */
-std::unique_ptr<PatternSequenceStatus> getPatternSequenceStatus() {
-  auto result = sendGetMessage<PatternSequenceStatus>(0x1A24);
-  return std::make_unique<PatternSequenceStatus>(*result.get());
+std::unique_ptr<PatternStatus> getPatternStatus() {
+  auto result = sendGetMessage<PatternStatus>(0x1A24);
+  return std::make_unique<PatternStatus>(*result.get());
 }
 
 /**
- * setPatternSequenceStatus
+ * setPatternStatus
  * CMD2 : 0x1A, CMD3 : 0x24, Param : 1
  */
-bool setPatternSequenceStatus(PatternSequenceStatus mode) {
+bool setPatternStatus(PatternStatus mode) {
   auto result = sendSetMessage<uint8_t>(0x1A24, static_cast<uint8_t>(mode));
   return (result != nullptr);
 }

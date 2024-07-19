@@ -150,8 +150,8 @@ union LEDCurrent {
 };
 
 enum class DisplayMode : bool {
-  PATTERN = true, // Pattern Display
-  VIDEO = false   // Video Display
+  VIDEO = false, // Video Display
+  PATTERN = true // Pattern Display
 };
 
 union GammaCorrection {
@@ -204,7 +204,7 @@ enum class PatternDataSource : uint8_t {
   INTERNAL = 3 // Internal flash
 };
 
-enum class PatternSequenceStatus : uint8_t {
+enum class PatternStatus : uint8_t {
   STOP = 0,  // Next start will restart sequence from beginning
   PAUSE = 1, // Next start will restart sequence from current pattern
   START = 2  // Start pattern display sequence
@@ -271,8 +271,8 @@ bool setPatternTriggerMode(PatternTriggerMode mode);
 std::unique_ptr<PatternDataSource> getPatternDataSource();
 bool setPatternDataSource(PatternDataSource input);
 
-std::unique_ptr<PatternSequenceStatus> getPatternSequenceStatus();
-bool setPatternSequenceStatus(PatternSequenceStatus mode);
+std::unique_ptr<PatternStatus> getPatternStatus();
+bool setPatternStatus(PatternStatus mode);
 
 std::unique_ptr<PatternPeriod> getPatternPeriod();
 bool setPatternPeriod(uint32_t exposure, uint32_t frame);

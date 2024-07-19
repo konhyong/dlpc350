@@ -21,18 +21,17 @@ struct Projector {
   PowerMode powerMode;
   LEDCurrent ledCurrent;
   DisplayMode displayMode;
-  PatternSequenceStatus patternSequenceStatus;
+  PatternStatus patternStatus;
 
   Projector()
       : index{0}, powerMode{PowerMode::NORMAL}, ledCurrent{0},
-        displayMode{DisplayMode::VIDEO},
-        patternSequenceStatus(PatternSequenceStatus::STOP) {}
+        displayMode{DisplayMode::VIDEO}, patternStatus(PatternStatus::STOP) {}
   Projector(unsigned int _index, PowerMode _powerMode = PowerMode::NORMAL,
             LEDCurrent _ledCurrent = LEDCurrent{0},
             DisplayMode _displayMode = DisplayMode::VIDEO,
-            PatternSequenceStatus _psStatus = PatternSequenceStatus::STOP)
+            PatternStatus _psStatus = PatternStatus::STOP)
       : index{_index}, powerMode{_powerMode}, ledCurrent{_ledCurrent},
-        displayMode{_displayMode}, patternSequenceStatus{_psStatus} {}
+        displayMode{_displayMode}, patternStatus{_psStatus} {}
 };
 
 struct Controller {
@@ -131,9 +130,9 @@ protected:
 
   /// @brief Start/Stop the pattern sequence. Expects the pattern sequence to be
   /// validated before calling this function.
-  /// @param psStatus PatternSequenceStatus object indicating start/stop
+  /// @param psStatus PatternStatus object indicating start/stop
   /// @return True on success
-  bool setPatternSequenceStatusSingle(PatternSequenceStatus psStatus);
+  bool setPatternStatusSingle(PatternStatus psStatus);
 
   /// @brief Contains information of connected projectors and the corresponding
   /// index for the USB interface.

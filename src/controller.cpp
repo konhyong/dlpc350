@@ -90,9 +90,9 @@ bool Controller::setDisplayModeSingle(DisplayMode displayMode) {
 
   // If device is already in pattern mode, stop sequence
   if (*currentDisplayMode == DisplayMode::PATTERN) {
-    auto patternSequenceStatus = DLPC350::getPatternSequenceStatus();
-    if (*patternSequenceStatus != PatternSequenceStatus::STOP) {
-      setPatternSequenceStatusSingle(PatternSequenceStatus::STOP);
+    auto patternStatus = DLPC350::getPatternStatus();
+    if (*patternStatus != PatternStatus::STOP) {
+      setPatternStatusSingle(PatternStatus::STOP);
     }
   }
 
@@ -130,7 +130,7 @@ bool Controller::startPatternSequence(PatternSequence &patternSequence) {
                   << std::endl;
         return false;
       }
-      projector.patternSequenceStatus = PatternSequenceStatus::START;
+      projector.patternStatus = PatternStatus::START;
     }
   }
   std::cout << "[Controller] Pattern sequence started" << std::endl;
@@ -150,8 +150,7 @@ bool Controller::startPatternSequenceSingle(PatternSequence &patternSequence) {
 
   Controller::validatePatternSequenceSingle();
 
-  return Controller::setPatternSequenceStatusSingle(
-      PatternSequenceStatus::START);
+  return Controller::setPatternStatusSingle(PatternStatus::START);
 }
 
 bool Controller::stopPatternSequence() {
@@ -163,13 +162,12 @@ bool Controller::stopPatternSequence() {
   for (auto &projector : projectors) {
     if (projector.controlled) {
       USB::select(projector.index);
-      if (!Controller::setPatternSequenceStatusSingle(
-              PatternSequenceStatus::STOP)) {
+      if (!Controller::setPatternStatusSingle(PatternStatus::STOP)) {
         std::cerr << "[Controller] Failed to stop pattern sequence"
                   << std::endl;
         return false;
       }
-      projector.patternSequenceStatus = PatternSequenceStatus::STOP;
+      projector.patternStatus = PatternStatus::STOP;
     }
   }
   std::cout << "[Controller] Pattern Stopped" << std::endl;
@@ -177,7 +175,7 @@ bool Controller::stopPatternSequence() {
 }
 
 bool Controller::validatePatternSequenceSingle() {
-  Controller::setPatternSequenceStatusSingle(PatternSequenceStatus::STOP);
+  Controller::setPatternStatusSingle(PatternStatus::STOP);
 
   DLPC350::validatePatternSequence();
   std::this_thread::sleep_for(300ms);
@@ -195,19 +193,18 @@ bool Controller::validatePatternSequenceSingle() {
   return false;
 }
 
-bool Controller::setPatternSequenceStatusSingle(
-    PatternSequenceStatus psStatus) {
+bool Controller::setPatternStatusSingle(PatternStatus psStatus) {
 
-  DLPC350::setPatternSequenceStatus(psStatus);
+  DLPC350::setPatternStatus(psStatus);
 
   for (int i = 0; i < maxRetries; ++i) {
     std::this_thread::sleep_for(100ms);
 
-    auto currentStatus = DLPC350::getPatternSequenceStatus();
+    auto currentStatus = DLPC350::getPatternStatus();
     if (*currentStatus == psStatus) {
       return true;
     }
-    DLPC350::setPatternSequenceStatus(psStatus);
+    DLPC350::setPatternStatus(psStatus);
   }
 
   std::cerr
