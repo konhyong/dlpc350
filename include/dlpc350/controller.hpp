@@ -54,6 +54,9 @@ struct Controller {
   /// @brief Close all USB connections to DLPC350 devices
   void close();
 
+  /// @brief Sync the controller with the projectors
+  void sync();
+
   /// @brief Check if there are connected DLPC350 devices
   /// @return True if there is at least one device connected
   inline bool isConnected() { return USB::isConnected(); }
@@ -67,8 +70,9 @@ struct Controller {
   /// @return Reference to the Projector
   Projector &getProjector(unsigned int index);
 
-  /// @brief Sync the controller with the projectors
-  void sync();
+  bool updateIndices(const std::vector<unsigned int> &indices);
+
+  // TODO: add test pattern or curtain to quickly check projector index
 
   /// @brief Perform software reset on all controlled projectors
   /// @return True on success

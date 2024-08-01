@@ -32,6 +32,21 @@ void Controller::close() {
   USB::close();
 }
 
+bool Controller::updateIndices(const std::vector<unsigned int> &indices) {
+  if (indices.size() != Controller::deviceNum()) {
+    std::cerr << "[Controller] indices don't match connected devices"
+              << std::endl;
+    return false;
+  }
+  // TODO: change to a swap to match imgui function?
+  for (unsigned int i = 0; i < indices.size(); ++i) {
+    projectors[i].index = indices[i];
+
+  }
+
+  return true;
+}
+
 // TODO: use expected or optional to handle error cases
 Projector &Controller::getProjector(unsigned int index) {
   assert(index < deviceNum());
@@ -45,18 +60,16 @@ void Controller::sync() {
   }
 
   for (auto &projector : projectors) {
-    if (projector.controlled) {
-      USB::select(projector.index);
+    USB::select(projector.index);
 
-      projector.powerMode = *DLPC350::getPowerMode();
-      projector.ledCurrent = *DLPC350::getLEDCurrent();
-      projector.displayMode = *DLPC350::getDisplayMode();
-      projector.patternStatus = *DLPC350::getPatternStatus();
+    projector.powerMode = *DLPC350::getPowerMode();
+    projector.ledCurrent = *DLPC350::getLEDCurrent();
+    projector.displayMode = *DLPC350::getDisplayMode();
+    projector.patternStatus = *DLPC350::getPatternStatus();
 
-      projector.hardwareStatus = *DLPC350::getHardwareStatus();
-      projector.systemStatus = *DLPC350::getSystemStatus();
-      projector.mainStatus = *DLPC350::getMainStatus();
-    }
+    projector.hardwareStatus = *DLPC350::getHardwareStatus();
+    projector.systemStatus = *DLPC350::getSystemStatus();
+    projector.mainStatus = *DLPC350::getMainStatus();
   }
 }
 
