@@ -160,6 +160,52 @@ bool Controller::setPowerMode(unsigned int index, PowerMode powerMode) {
   return true;
 }
 
+bool Controller::startTestPattern(TestPattern testType) {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return true;
+  }
+
+  for (auto &projector : projectors) {
+    if (projector.controlled) {
+      USB::select(projector.index);
+      if (!DLPC350::setTestPattern(testType)) {
+        std::cerr << "[Controller] Failed to set test pattern" << std::endl;
+        return false;
+      }
+      if (!DLPC350::setInputSource(InputType::TEST_PATTERN,
+                                   InputBitDepth::INTERNAL)) {
+        std::cerr << "[Controller] Failed to set input source to test pattern"
+                  << std::endl;
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+bool Controller::stopTestPattern() {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return true;
+  }
+
+  for (auto &projector : projectors) {
+    if (projector.controlled) {
+      USB::select(projector.index);
+      if (!DLPC350::setInputSource(InputType::PARALLEL,
+                                   InputBitDepth::BITS24)) {
+        std::cerr << "[Controller] Failed to set input source to parallel 24bit"
+                  << std::endl;
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 bool Controller::setDisplayMode(DisplayMode displayMode) {
   if (projectors.empty()) {
     std::cout << "[Controller] No projectors connected" << std::endl;

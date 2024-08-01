@@ -72,7 +72,6 @@ struct Controller {
 
   bool updateIndices(const std::vector<unsigned int> &indices);
 
-  // TODO: add test pattern or curtain to quickly check projector index
   // TODO: change namespace for dlpc350 on cmake
 
   /// @brief Perform software reset on all controlled projectors
@@ -92,6 +91,15 @@ struct Controller {
   /// @param powerMode STANDBY(true) / NORMAL(false)
   /// @return True on success
   bool setPowerMode(unsigned int index, PowerMode powerMode);
+
+  /// @brief Start test pattern on controlled projectors
+  /// @param testType type of test pattern
+  /// @return True on success
+  bool startTestPattern(TestPattern testType);
+
+  /// @brief Stop test pattern and set parallel 24bit as input source
+  /// @return True on success
+  bool stopTestPattern();
 
   /// @brief Set display mode on all controlled projectors
   /// @param displayMode PATTERN(true) / VIDEO(false)
