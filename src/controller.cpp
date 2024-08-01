@@ -41,7 +41,6 @@ bool Controller::updateIndices(const std::vector<unsigned int> &indices) {
   // TODO: change to a swap to match imgui function?
   for (unsigned int i = 0; i < indices.size(); ++i) {
     projectors[i].index = indices[i];
-
   }
 
   return true;
@@ -126,6 +125,31 @@ bool Controller::setPowerMode(PowerMode powerMode) {
       projector.powerMode = powerMode;
     }
   }
+
+  std::this_thread::sleep_for(2000ms);
+
+  std::cout << "[Controller] Set Power Mode: "
+            << ((powerMode == PowerMode::NORMAL) ? "Normal" : "Standby")
+            << std::endl;
+
+  return true;
+}
+
+bool Controller::setPowerMode(unsigned int index, PowerMode powerMode) {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return true;
+  }
+
+  assert(index < deviceNum());
+  auto &projector = projectors[index];
+
+  USB::select(projector.index);
+  if (!DLPC350::setPowerMode(powerMode)) {
+    std::cerr << "[Controller] Failed to set power mode" << std::endl;
+    return false;
+  }
+  projector.powerMode = powerMode;
 
   std::this_thread::sleep_for(2000ms);
 
