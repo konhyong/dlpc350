@@ -32,13 +32,32 @@ void Controller::close() {
   USB::close();
 }
 
+void Controller::controlAll() {
+  std::cout << "[Controller] Controlling all projectors" << std::endl;
+  for (auto &projector : projectors) {
+    projector.controlled = true;
+  }
+}
+
+void Controller::controlSingle(unsigned int index) {
+  assert(index < deviceNum());
+  std::cout << "[Controller] Controlling projector " << index << std::endl;
+  for (unsigned int i = 0; i < projectors.size(); ++i) {
+    if (i == index) {
+      projectors[i].controlled = true;
+    } else {
+      projectors[i].controlled = false;
+    }
+  }
+}
+
 bool Controller::updateIndices(const std::vector<unsigned int> &indices) {
   if (indices.size() != Controller::deviceNum()) {
     std::cerr << "[Controller] indices don't match connected devices"
               << std::endl;
     return false;
   }
-  // TODO: change to a swap to match imgui function?
+
   for (unsigned int i = 0; i < indices.size(); ++i) {
     projectors[i].index = indices[i];
   }

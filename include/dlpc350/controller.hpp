@@ -70,9 +70,18 @@ struct Controller {
   /// @return Reference to the Projector
   Projector &getProjector(unsigned int index);
 
+  /// @brief Control all projectors
+  void controlAll();
+
+  /// @brief Control a single projector
+  /// @param index index of projector to control
+  void controlSingle(unsigned int index);
+
+  // TODO: change to a swap to match imgui function?
   bool updateIndices(const std::vector<unsigned int> &indices);
 
   // TODO: change namespace for dlpc350 on cmake
+  // TODO: adjust control flag check
 
   /// @brief Perform software reset on all controlled projectors
   /// @return True on success
