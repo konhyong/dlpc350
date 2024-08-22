@@ -14,14 +14,14 @@ bool Controller::open() {
     return false;
   }
 
-  std::cout << "[Controller] Opening device connections: " << deviceNum()
-            << std::endl;
-
   for (int i = 0; i < deviceNum(); ++i) {
     projectors.emplace_back(i);
   }
 
   Controller::sync();
+
+  std::cout << "[Controller] Opening device connections: " << deviceNum()
+            << std::endl;
 
   return true;
 }
@@ -30,6 +30,26 @@ void Controller::close() {
   std::cout << "[Controller] Closing device connections" << std::endl;
   projectors.clear();
   USB::close();
+}
+
+void Controller::sync() {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return;
+  }
+
+  for (auto &projector : projectors) {
+    USB::select(projector.index);
+
+    projector.powerMode = *DLPC350::getPowerMode();
+    projector.ledCurrent = *DLPC350::getLEDCurrent();
+    projector.displayMode = *DLPC350::getDisplayMode();
+    projector.patternStatus = *DLPC350::getPatternStatus();
+
+    projector.hardwareStatus = *DLPC350::getHardwareStatus();
+    projector.systemStatus = *DLPC350::getSystemStatus();
+    projector.mainStatus = *DLPC350::getMainStatus();
+  }
 }
 
 void Controller::controlAll() {
@@ -69,26 +89,6 @@ bool Controller::updateIndices(const std::vector<unsigned int> &indices) {
 Projector &Controller::getProjector(unsigned int index) {
   assert(index < deviceNum());
   return projectors[index];
-}
-
-void Controller::sync() {
-  if (projectors.empty()) {
-    std::cout << "[Controller] No projectors connected" << std::endl;
-    return;
-  }
-
-  for (auto &projector : projectors) {
-    USB::select(projector.index);
-
-    projector.powerMode = *DLPC350::getPowerMode();
-    projector.ledCurrent = *DLPC350::getLEDCurrent();
-    projector.displayMode = *DLPC350::getDisplayMode();
-    projector.patternStatus = *DLPC350::getPatternStatus();
-
-    projector.hardwareStatus = *DLPC350::getHardwareStatus();
-    projector.systemStatus = *DLPC350::getSystemStatus();
-    projector.mainStatus = *DLPC350::getMainStatus();
-  }
 }
 
 bool Controller::softwareReset() {
@@ -314,23 +314,86 @@ bool Controller::startPatternSequenceSingle(PatternSequence &patternSequence) {
     std::cerr << "[Controller] Failed to set pattern data source" << std::endl;
     return false;
   }
+
   if (!DLPC350::configurePatternSequence(patternSequence)) {
     std::cerr << "[Controller] Failed to configure pattern sequence"
               << std::endl;
     return false;
   }
-  if (!DLPC350::setPatternPeriod(patternSequence.getExposure(),
-                                 patternSequence.getPeriod())) {
-    std::cerr << "[Controller] Failed to set pattern period" << std::endl;
-    return false;
-  }
+
   if (!DLPC350::setPatternTriggerMode(PatternTriggerMode::MODE0)) {
     std::cerr << "[Controller] Failed to set pattern trigger mode" << std::endl;
     return false;
   }
 
+  if (!DLPC350::setPatternPeriod(patternSequence.getExposure(),
+                                 patternSequence.getPeriod())) {
+    std::cerr << "[Controller] Failed to set pattern period" << std::endl;
+    return false;
+  }
+
   if (!DLPC350::sendPatternDisplayLUT(patternSequence)) {
     std::cerr << "[Controller] Failed to send pattern sequence to LUT"
+              << std::endl;
+    return false;
+  }
+
+  if (!Controller::validatePatternSequenceSingle()) {
+    return false;
+  }
+
+  return Controller::setPatternStatusSingle(PatternStatus::START);
+}
+
+bool Controller::startVarExpPatSequence(VarExpPatSequence &varExpPatSequence) {
+  if (projectors.empty()) {
+    std::cout << "[Controller] No projectors connected" << std::endl;
+    return true;
+  }
+
+  for (auto &projector : projectors) {
+    if (projector.controlled) {
+      USB::select(projector.index);
+      if (!Controller::startVarExpPatSequenceSingle(varExpPatSequence)) {
+        std::cerr
+            << "[Controller] Failed to start variable exposure pattern sequence"
+            << std::endl;
+        return false;
+      }
+      projector.patternStatus = PatternStatus::START;
+    }
+  }
+
+  std::cout << "[Controller] Set display mode: Pattern" << std::endl;
+  return true;
+}
+
+bool Controller::startVarExpPatSequenceSingle(
+    VarExpPatSequence &varExpPatSequence) {
+  if (!Controller::setDisplayModeSingle(DisplayMode::PATTERN)) {
+    return false;
+  }
+
+  if (!DLPC350::setPatternDataSource(PatternDataSource::EXTERNAL)) {
+    std::cerr << "[Controller] Failed to set pattern data source" << std::endl;
+    return false;
+  }
+
+  if (!DLPC350::setPatternTriggerMode(PatternTriggerMode::MODE0)) {
+    std::cerr << "[Controller] Failed to set pattern trigger mode" << std::endl;
+    return false;
+  }
+
+  if (!DLPC350::configureVarExpPatSequence(varExpPatSequence)) {
+    std::cerr
+        << "[Controller] Failed to configure variable exposure pattern sequence"
+        << std::endl;
+    return false;
+  }
+
+  if (!DLPC350::sendVarExpPatDisplayLUT(varExpPatSequence)) {
+    std::cerr << "[Controller] Failed to send variable exposure pattern "
+                 "sequence to LUT"
               << std::endl;
     return false;
   }

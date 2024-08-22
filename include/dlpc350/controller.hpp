@@ -70,6 +70,9 @@ struct Controller {
   /// @return Reference to the Projector
   Projector &getProjector(unsigned int index);
 
+  // TODO: change namespace for dlpc350 on cmake
+  // TODO: adjust control flag check
+
   /// @brief Control all projectors
   void controlAll();
 
@@ -79,9 +82,6 @@ struct Controller {
 
   // TODO: change to a swap to match imgui function?
   bool updateIndices(const std::vector<unsigned int> &indices);
-
-  // TODO: change namespace for dlpc350 on cmake
-  // TODO: adjust control flag check
 
   /// @brief Perform software reset on all controlled projectors
   /// @return True on success
@@ -124,7 +124,15 @@ struct Controller {
   /// function.
   /// @param PatternSequence Reference to pattern sequence object
   /// @return True on success
-  bool startPatternSequence(PatternSequence &PatternSequence);
+  bool startPatternSequence(PatternSequence &patternSequence);
+
+  /// @brief Start variable exposure pattern sequence on all controlled
+  /// projectors. shoudl create necessary variable exposure patterns prior to
+  /// calling this function.
+  /// @param varExpPatSequence Reference to variable exposure pattern sequence
+  /// object
+  /// @return True on success
+  bool startVarExpPatSequence(VarExpPatSequence &varExpPatSequence);
 
   /// @brief Stop pattern sequence on all controlled projectors.
   /// @return True on success
@@ -170,6 +178,14 @@ protected:
   /// @param patternSequence  Reference to pattern sequence object
   /// @return True on success
   bool startPatternSequenceSingle(PatternSequence &patternSequence);
+
+  /// @brief Start variable exposure pattern sequence on a single projector.
+  /// Should create necessary variable exposure pattern sequence objects prior
+  /// to calling this function.
+  /// @param varExpPatSequence  Reference to variable exposure pattern sequence
+  /// object
+  /// @return True on success
+  bool startVarExpPatSequenceSingle(VarExpPatSequence &varExpPatSequence);
 
   /// @brief Validate the current pattern configured on the DLPC350. Expects the
   /// pattern data and the related configuration to be already set.

@@ -8,7 +8,8 @@
 
 namespace DLPC350 {
 
-const size_t maxPatternInSequence = 128;
+const size_t maxPatterns = 128;
+const size_t maxVarExpPats = 1824;
 
 struct Pattern {
   enum class LEDSelect : uint8_t {
@@ -130,6 +131,7 @@ struct Pattern {
       bool bufferSwap : 1; // requires 230us before next pattern
       bool triggerOutPrevious : 1;
       uint8_t : 4;
+      uint8_t : 8;
     };
   };
 
@@ -160,7 +162,7 @@ public:
     assert(patternIndex <= 24);
     assert(bitDepth <= 8);
 
-    bool bufferSwap = (sizePattern() == 0) ? true : false;
+    bool bufferSwap = (getPatternNum() == 0) ? true : false;
 
     Pattern pattern(triggerType, patternIndex, bitDepth, ledSelect,
                     invertPattern, insertBlack, bufferSwap, triggerOutPrevious);
@@ -170,11 +172,11 @@ public:
     return true;
   }
 
-  void addPattern(Pattern &pat) { pattern[patternNum++] = pat; }
+  void addPattern(Pattern &pat) { patterns[patternNum++] = pat; }
 
-  inline size_t sizePattern() { return patternNum; }
+  inline size_t getPatternNum() { return patternNum; }
 
-  inline Pattern &getPattern(size_t index) { return pattern[index]; }
+  inline Pattern &getPattern(size_t index) { return patterns[index]; }
 
   void setExposure(uint32_t _exposure) { exposure = _exposure; }
   inline uint32_t getExposure() { return exposure; }
@@ -184,9 +186,62 @@ public:
 
 private:
   size_t patternNum;
-  Pattern pattern[maxPatternInSequence];
+  Pattern patterns[maxPatterns];
   uint32_t exposure;
   uint32_t period;
+};
+
+struct VarExpPat {
+  Pattern pattern;
+  uint32_t exposure;
+  uint32_t period;
+
+  VarExpPat() : pattern(), exposure{0}, period{0} {}
+  VarExpPat(Pattern _pattern, uint32_t _exposure, uint32_t _period)
+      : pattern{_pattern}, exposure{_exposure}, period{_period} {}
+};
+
+struct VarExpPatSequence {
+public:
+  VarExpPatSequence() : varExpPatNum(0) {}
+
+  void clear() { varExpPatNum = 0; }
+
+  template <typename PatternType>
+  bool addVarExpPat(uint32_t exposure, uint32_t period,
+                    Pattern::TriggerType triggerType, PatternType patternType,
+                    uint8_t bitDepth, Pattern::LEDSelect ledSelect,
+                    bool invertPattern = false, bool insertBlack = false,
+                    bool triggerOutPrevious = false) {
+
+    uint8_t patternIndex = static_cast<uint8_t>(patternType);
+
+    assert(patternIndex <= 25); // 25 with bit depth 1 == white fill
+    assert(bitDepth <= 8);
+
+    bool bufferSwap = (getVarExpPatNum() == 0) ? true : false;
+
+    Pattern pattern(triggerType, patternIndex, bitDepth, ledSelect,
+                    invertPattern, insertBlack, bufferSwap, triggerOutPrevious);
+
+    VarExpPat varExpPat(pattern, exposure, period);
+
+    addVarExpPat(varExpPat);
+
+    return true;
+  }
+
+  void addVarExpPat(VarExpPat &varExpPat) {
+    varExpPats[varExpPatNum++] = varExpPat;
+  }
+
+  inline size_t getVarExpPatNum() { return varExpPatNum; }
+
+  inline VarExpPat &getVarExpPat(size_t index) { return varExpPats[index]; }
+
+private:
+  size_t varExpPatNum;
+  VarExpPat varExpPats[maxVarExpPats];
 };
 }; // namespace DLPC350
 

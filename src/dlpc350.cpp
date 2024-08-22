@@ -87,7 +87,7 @@ std::unique_ptr<CurtainColor> getColorCurtain() {
 
 /**
  * setColorCurtain
- * CMD2 : 0x11, CMD3 : 0x00, Param : 3
+ * CMD2 : 0x11, CMD3 : 0x00, Param : 6
  */
 bool setColorCurtain(uint16_t red, uint16_t green, uint16_t blue) {
   auto result = sendSetMessage<uint16_t, uint16_t, uint16_t>(
@@ -294,7 +294,7 @@ std::unique_ptr<PatternPeriod> getPatternPeriod() {
 
 /**
  * setPatternPeriod
- * CMD2 : 0x1A, CMD3 : 0x29, Param : 1
+ * CMD2 : 0x1A, CMD3 : 0x29, Param : 8
  */
 bool setPatternPeriod(uint32_t exposure, uint32_t frame) {
   assert(exposure <= frame);
@@ -316,7 +316,7 @@ bool setMailboxMode(MailboxMode mode) {
 
 /**
  * setMailboxOffset
- * CMD2 : 0x1A, CMD3 : 0x32
+ * CMD2 : 0x1A, CMD3 : 0x32, Param : 1
  */
 bool setMailboxOffset(uint8_t offset) {
   assert(offset <= 127);
@@ -326,30 +326,57 @@ bool setMailboxOffset(uint8_t offset) {
 }
 
 /**
+ * setMailboxVarExpOffset
+ * CMD2 : 0x1A, CMD3 : 0x3F, Param : 2
+ */
+bool setMailboxVarExpOffset(uint16_t offset) {
+  assert(offset <= 1823);
+
+  auto result =
+      sendSetMessage<uint16_t>(0x1A3F, std::forward<uint16_t>(offset));
+  return (result != nullptr);
+}
+
+/**
  * configurePatternSequence
  * CMD2 : 0x1A, CMD3 : 0x31, Param : 4
  */
 bool configurePatternSequence(PatternSequence &patternSequence, bool repeat,
-                              uint8_t patternNumPerTriggerOut2) {
+                              uint8_t patternNumPerTrigOut2) {
   if (repeat) {
-    patternNumPerTriggerOut2 =
-        static_cast<uint8_t>(patternSequence.sizePattern());
+    patternNumPerTrigOut2 =
+        static_cast<uint8_t>(patternSequence.getPatternNum());
   }
   auto result = sendSetMessage<uint8_t, uint8_t, uint8_t, uint8_t>(
-      0x1A31, static_cast<uint8_t>(patternSequence.sizePattern() - 1),
+      0x1A31, static_cast<uint8_t>(patternSequence.getPatternNum() - 1),
       static_cast<uint8_t>(repeat),
-      static_cast<uint8_t>(patternNumPerTriggerOut2 - 1),
+      static_cast<uint8_t>(patternNumPerTrigOut2 - 1),
       static_cast<uint8_t>(0)); // Irrelevant unless PatternDataSource::INTERNAL
   return (result != nullptr);
 }
 
 /**
+ * configureVarExpPatSequence
+ * CMD2 : 0x1A, CMD3 : 0x40, Param : 6
+ */
+bool configureVarExpPatSequence(VarExpPatSequence &varExpPatSequence,
+                                bool repeat,
+                                uint16_t varExpPatNumPerTrigOut2) {
+  if (repeat) {
+    varExpPatNumPerTrigOut2 =
+        static_cast<uint16_t>(varExpPatSequence.getVarExpPatNum());
+  }
+  auto result = sendSetMessage<uint16_t, uint16_t, uint8_t, uint8_t>(
+      0x1A40, static_cast<uint16_t>(varExpPatSequence.getVarExpPatNum() - 1),
+      static_cast<uint16_t>(varExpPatNumPerTrigOut2 - 1),
+      static_cast<uint8_t>(0), // Irrelevant unless PatternDataSource::INTERNAL
+      static_cast<uint8_t>(repeat));
+  return (result != nullptr);
+}
+
+/**
  * sendPatternDisplayLUT
- * CMD2 : 0x1A, CMD3 : 0x34
- * @param
- *
- * @return
- *
+ * CMD2 : 0x1A, CMD3 : 0x34, Param : 3
  */
 bool sendPatternDisplayLUT(PatternSequence &patternSequence) {
   if (!setMailboxMode(MailboxMode::PATTERN))
@@ -360,7 +387,7 @@ bool sendPatternDisplayLUT(PatternSequence &patternSequence) {
   auto send = Message(Message::Type::WRITE, 0x1A34);
 
   // TODO: possible to use sendSetMessage & addData?
-  for (size_t i = 0; i < patternSequence.sizePattern(); i++) {
+  for (size_t i = 0; i < patternSequence.getPatternNum(); i++) {
     Pattern &pattern = patternSequence.getPattern(i);
     uint8_t *value = reinterpret_cast<uint8_t *>(&pattern.value);
     for (size_t j = 0; j < 3; j++) {
@@ -373,6 +400,35 @@ bool sendPatternDisplayLUT(PatternSequence &patternSequence) {
   setMailboxMode(MailboxMode::DISABLE);
 
   return (result != nullptr);
+}
+
+/**
+ * sendVarExpPatDisplayLUT
+ * CMD2 : 0x1A, CMD3 : 0x3E, Param : 12
+ */
+bool sendVarExpPatDisplayLUT(VarExpPatSequence &varExpPatSequence) {
+  if (!setMailboxMode(MailboxMode::VAR_EXPOSURE_PATTERN))
+    return false;
+
+  for (size_t i = 0; i < varExpPatSequence.getVarExpPatNum(); i++) {
+    setMailboxVarExpOffset(i);
+
+    auto send = Message(Message::Type::WRITE, 0x1A3E);
+
+    VarExpPat &varExpPat = varExpPatSequence.getVarExpPat(i);
+    uint8_t *value = reinterpret_cast<uint8_t *>(&varExpPat.pattern);
+    for (size_t j = 0; j < 12; j++) {
+      send.data[send.length++] = *(value++);
+    }
+    auto result = transact(send);
+    if (result == nullptr) {
+      return false;
+    }
+  }
+
+  setMailboxMode(MailboxMode::DISABLE);
+
+  return true;
 }
 
 }; // namespace DLPC350

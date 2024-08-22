@@ -226,6 +226,8 @@ enum class MailboxMode : uint8_t {
   VAR_EXPOSURE_PATTERN = 3 // Open mailbox for var exposure pattern definition
 };
 
+// TODO: convert unique_ptr to regular data return type?
+
 /// Status Commands
 std::unique_ptr<HardwareStatus> getHardwareStatus();
 std::unique_ptr<SystemStatus> getSystemStatus();
@@ -279,12 +281,19 @@ std::unique_ptr<PatternPeriod> getPatternPeriod();
 bool setPatternPeriod(uint32_t exposure, uint32_t frame);
 
 bool setMailboxMode(MailboxMode mode);
+
 bool setMailboxOffset(uint8_t offset);
+bool setMailboxVarExpOffset(uint16_t offset);
 
 bool configurePatternSequence(PatternSequence &patternSequence,
                               bool repeat = true,
-                              uint8_t patternNumPerTriggerOut2 = 1);
+                              uint8_t patternNumPerTrigOut2 = 1);
+bool configureVarExpPatSequence(VarExpPatSequence &varExpPatSequence,
+                                bool repeat = true,
+                                uint16_t varExpPatNumPerTrigOut2 = 1);
+
 bool sendPatternDisplayLUT(PatternSequence &patternSequence);
+bool sendVarExpPatDisplayLUT(VarExpPatSequence &varExpPatSequence);
 
 }; // namespace DLPC350
 
