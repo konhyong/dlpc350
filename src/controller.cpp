@@ -379,7 +379,7 @@ bool Controller::startVarExpPatSequenceSingle(
     return false;
   }
 
-  if (!DLPC350::setPatternTriggerMode(PatternTriggerMode::MODE0)) {
+  if (!DLPC350::setPatternTriggerMode(PatternTriggerMode::MODE4)) {
     std::cerr << "[Controller] Failed to set pattern trigger mode" << std::endl;
     return false;
   }
