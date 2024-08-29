@@ -1,10 +1,10 @@
-#ifndef DLPC350_STATUS_HPP
-#define DLPC350_STATUS_HPP
+#ifndef MULTI350_STATUS_HPP
+#define MULTI350_STATUS_HPP
 
 #include <string>
 #include <vector>
 
-namespace DLPC350 {
+namespace MULTI350 {
 namespace Status {
 namespace Hardware {
 extern std::vector<std::string> initError;
@@ -25,6 +25,6 @@ extern std::vector<std::string> bufferFrozen;
 extern std::vector<std::string> gammaCorrection;
 }; // namespace Main
 }; // namespace Status
-}; // namespace DLPC350
+}; // namespace MULTI350
 
 #endif

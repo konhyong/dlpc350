@@ -1,6 +1,6 @@
-#include "dlpc350/status.hpp"
+#include "multi350/status.hpp"
 
-namespace DLPC350 {
+namespace MULTI350 {
 namespace Status {
 namespace Hardware {
 std::vector<std::string> initError = {"Error", "Successful"};
@@ -32,4 +32,4 @@ std::vector<std::string> gammaCorrection = {"Gamma correction is disabled",
                                             "Gamma correction is enabled"};
 }; // namespace Main
 }; // namespace Status
-}; // namespace DLPC350
+}; // namespace MULTI350

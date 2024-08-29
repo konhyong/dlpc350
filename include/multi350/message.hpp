@@ -1,5 +1,5 @@
-#ifndef DLPC350_MESSAGE_HPP
-#define DLPC350_MESSAGE_HPP
+#ifndef MULTI350_MESSAGE_HPP
+#define MULTI350_MESSAGE_HPP
 
 #include "usb.hpp"
 #include <algorithm>
@@ -7,7 +7,7 @@
 #include <iostream>
 #include <utility>
 
-namespace DLPC350 {
+namespace MULTI350 {
 
 namespace Internal {
 constexpr size_t maxMessageDataSize = 512;
@@ -184,6 +184,6 @@ extern inline int32_t sendNoAckMessage(uint16_t cmd, ParamList &&...params) {
 
   return write(send);
 }
-}; // namespace DLPC350
+}; // namespace MULTI350
 
 #endif

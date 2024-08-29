@@ -1,12 +1,12 @@
-#ifndef DLPC350_PATTERN_HPP
-#define DLPC350_PATTERN_HPP
+#ifndef MULTI350_PATTERN_HPP
+#define MULTI350_PATTERN_HPP
 
 #include "usb.hpp"
 #include <cassert>
 #include <cstdint>
 #include <vector>
 
-namespace DLPC350 {
+namespace MULTI350 {
 
 const size_t maxPatterns = 128;
 const size_t maxVarExpPats = 1824;
@@ -243,6 +243,6 @@ private:
   size_t varExpPatNum;
   VarExpPat varExpPats[maxVarExpPats];
 };
-}; // namespace DLPC350
+}; // namespace MULTI350
 
 #endif

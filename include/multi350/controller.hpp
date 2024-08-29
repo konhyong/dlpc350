@@ -1,5 +1,5 @@
-#ifndef DLPC350_CONTROLLER_HPP
-#define DLPC350_CONTROLLER_HPP
+#ifndef MULTI350_CONTROLLER_HPP
+#define MULTI350_CONTROLLER_HPP
 
 #include "dlpc350.hpp"
 #include "message.hpp"
@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace DLPC350 {
+namespace MULTI350 {
 
 /// @brief Number of max possible retries on configuration attempt
 constexpr unsigned int maxRetries = 10;
@@ -203,5 +203,5 @@ protected:
   std::vector<Projector> projectors;
 };
 
-}; // namespace DLPC350
+}; // namespace MULTI350
 #endif

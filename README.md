@@ -1,6 +1,6 @@
-# dlpc350
+# multi350
 
-dlpc350 is a C++ based cross-platform library that provides an API to control multiple DLPC350 devices via USB.
+multi350 is a C++ based cross-platform library that provides an API to control multiple DLPC350 devices via USB.
 
 It is based on Texas Instrument's DLP® LightCrafter™ 4500 and cryeo's [lightcrafter library](https://github.com/cryeo/lightcrafter).
 

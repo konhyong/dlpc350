@@ -1,12 +1,12 @@
-#ifndef DLPC350_USB_HPP
-#define DLPC350_USB_HPP
+#ifndef MULTI350_USB_HPP
+#define MULTI350_USB_HPP
 
 #include "hidapi.h"
 #include <cstdint>
 #include <memory>
 #include <vector>
 
-namespace DLPC350 {
+namespace MULTI350 {
 namespace USB {
 /// @brief uint8_t array managed by unique pointers
 using Buffer = std::unique_ptr<uint8_t, std::default_delete<uint8_t[]>>;
@@ -20,7 +20,7 @@ const uint16_t productId = 0x6401;
 /// @brief Current HID device used for transactions
 extern hid_device *device;
 
-/// @brief All dlpc350 devices connected via HID
+/// @brief All DLPC350 devices connected via HID
 extern std::vector<hid_device *> devices;
 
 /// @brief Timeout duration for hid read in milliseconds
@@ -73,6 +73,6 @@ extern Buffer read();
 /// @return Number of bytes written
 extern int32_t write(Buffer &data);
 }; // namespace USB
-}; // namespace DLPC350
+}; // namespace MULTI350
 
 #endif

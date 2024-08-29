@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.29)
 
-project(dlpc350)
-set(LIB_NAME dlpc350)
+project(multi350)
+set(LIB_NAME multi350)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 

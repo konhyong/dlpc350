@@ -1,12 +1,12 @@
-#ifndef DLPC350_DLPC350_HPP
-#define DLPC350_DLPC350_HPP
+#ifndef MULTI350_DLPC350_HPP
+#define MULTI350_DLPC350_HPP
 
 #include "pattern.hpp"
 #include <cstdint>
 #include <memory>
 #include <string>
 
-namespace DLPC350 {
+namespace MULTI350 {
 
 union HardwareStatus {
   uint8_t value;
@@ -295,6 +295,6 @@ bool configureVarExpPatSequence(VarExpPatSequence &varExpPatSequence,
 bool sendPatternDisplayLUT(PatternSequence &patternSequence);
 bool sendVarExpPatDisplayLUT(VarExpPatSequence &varExpPatSequence);
 
-}; // namespace DLPC350
+}; // namespace MULTI350
 
 #endif

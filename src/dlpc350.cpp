@@ -1,7 +1,7 @@
-#include "dlpc350/dlpc350.hpp"
-#include "dlpc350/message.hpp"
+#include "multi350/dlpc350.hpp"
+#include "multi350/message.hpp"
 
-namespace DLPC350 {
+namespace MULTI350 {
 /**
  * getHardwareStatus
  * CMD2 : 0x1A, CMD3 : 0x0A
@@ -360,8 +360,7 @@ bool configurePatternSequence(PatternSequence &patternSequence, bool repeat,
  * CMD2 : 0x1A, CMD3 : 0x40, Param : 6
  */
 bool configureVarExpPatSequence(VarExpPatSequence &varExpPatSequence,
-                                bool repeat,
-                                uint16_t varExpPatNumPerTrigOut2) {
+                                bool repeat, uint16_t varExpPatNumPerTrigOut2) {
   if (repeat) {
     varExpPatNumPerTrigOut2 =
         static_cast<uint16_t>(varExpPatSequence.getVarExpPatNum());
@@ -431,4 +430,4 @@ bool sendVarExpPatDisplayLUT(VarExpPatSequence &varExpPatSequence) {
   return true;
 }
 
-}; // namespace DLPC350
+}; // namespace MULTI350
