@@ -403,12 +403,14 @@ struct Multi350GUI {
   }
 
   void setupProjectorIndices() {
-    if (multi350.deviceNum() != 4) {
-      std::cout << "[Controller] Not all 4 projectors are connected. Using "
-                   "default values"
-                << std::endl;
-      return;
-    }
+    // // TODO: adjust for less than 4 projectors
+    // if (multi350.deviceNum() != 4) {
+    //   std::cout << "[Controller] Only " << multi350.deviceNum()
+    //             << " projectors are connected. Using "
+    //                "default values"
+    //             << std::endl;
+    //   return;
+    // }
 
     usb_idx.push_back(proj0_index.get());
     usb_idx.push_back(proj1_index.get());
@@ -419,7 +421,7 @@ struct Multi350GUI {
       usb_names.push_back("USB" + std::to_string(usb_idx[i]));
     }
 
-    multi350.updateIndices(usb_idx);
+    // multi350.updateIndices(usb_idx);
   }
 };
 
