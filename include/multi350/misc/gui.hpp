@@ -67,8 +67,8 @@ struct Multi350GUI {
   ParameterInt proj3_blue{"proj3_blue", "multi350", 255, 0, 255};
 
   // TODO: change file to std::file to handle paths
-  PresetHandler preset_currents{"presets/currents", true};
-  PresetHandler preset_projectors{"presets/projectors", true};
+  PresetHandler preset_currents{"presets/currents"};
+  PresetHandler preset_projectors{"presets/projectors"};
 
   void init() {
     preset_currents << proj0_red << proj0_green << proj0_blue << proj1_red
