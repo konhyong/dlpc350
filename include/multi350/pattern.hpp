@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace MULTI350 {
+namespace multi350 {
 
 const size_t maxPatterns = 128;
 const size_t maxVarExpPats = 1824;
@@ -243,6 +243,6 @@ private:
   size_t varExpPatNum;
   VarExpPat varExpPats[maxVarExpPats];
 };
-}; // namespace MULTI350
+}; // namespace multi350
 
 #endif

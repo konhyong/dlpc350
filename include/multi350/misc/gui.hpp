@@ -1,23 +1,22 @@
 #ifndef PROJCONTROL_GUI_HPP
 #define PROJCONTROL_GUI_HPP
 
+#include "al/ui/al_ParameterGUI.hpp"
+#include "al/ui/al_PresetHandler.hpp"
+#include "multi350/controller.hpp"
 #include <array>
 #include <string>
 #include <vector>
 
-#include "al/ui/al_ParameterGUI.hpp"
-#include "al/ui/al_PresetHandler.hpp"
-#include "multi350/controller.hpp"
-
 using namespace al;
 
 struct Multi350GUI {
-  MULTI350::Controller multi350;
+  multi350::Controller multi350;
 
-  std::array<MULTI350::PatternSequence, 4> patternSequences;
+  std::array<multi350::PatternSequence, 4> patternSequences;
   int patternSequenceIndex{0};
 
-  MULTI350::VarExpPatSequence varExpPatSequences;
+  multi350::VarExpPatSequence varExpPatSequences;
 
   Trigger device_list{"device_list", ""};
   Trigger device_open{"device_open", ""};
@@ -260,14 +259,14 @@ struct Multi350GUI {
     });
 
     test_start.registerChangeCallback([&](float value) {
-      multi350.startTestPattern(MULTI350::TestPattern::COLOR_BARS);
+      multi350.startTestPattern(multi350::TestPattern::COLOR_BARS);
     });
 
     test_stop.registerChangeCallback(
         [&](float value) { multi350.stopTestPattern(); });
 
     apply_led.registerChangeCallback([&](float value) {
-      std::vector<MULTI350::LEDCurrent> currents;
+      std::vector<multi350::LEDCurrent> currents;
       currents.emplace_back(static_cast<uint8_t>(proj0_red.get()),
                             static_cast<uint8_t>(proj0_green.get()),
                             static_cast<uint8_t>(proj0_blue.get()));
@@ -324,11 +323,11 @@ struct Multi350GUI {
     });
 
     power_normal.registerChangeCallback([&](float value) {
-      multi350.setPowerMode(MULTI350::PowerMode::NORMAL);
+      multi350.setPowerMode(multi350::PowerMode::NORMAL);
     });
 
     power_standby.registerChangeCallback([&](float value) {
-      multi350.setPowerMode(MULTI350::PowerMode::STANDBY);
+      multi350.setPowerMode(multi350::PowerMode::STANDBY);
     });
 
     apply_indices.registerChangeCallback(
@@ -339,7 +338,7 @@ struct Multi350GUI {
   }
 
   void setupPatternSequences() {
-    using namespace MULTI350;
+    using namespace multi350;
     // TODO: check if insert black is needed on final pattern
     patternSequences[0].addPattern<Pattern::Pattern8bit>(
         Pattern::TriggerType::EXTERNAL_POSITIVE,

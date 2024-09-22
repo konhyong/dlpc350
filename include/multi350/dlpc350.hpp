@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 
-namespace MULTI350 {
+namespace multi350 {
 
 union HardwareStatus {
   uint8_t value;
@@ -295,6 +295,6 @@ bool configureVarExpPatSequence(VarExpPatSequence &varExpPatSequence,
 bool sendPatternDisplayLUT(PatternSequence &patternSequence);
 bool sendVarExpPatDisplayLUT(VarExpPatSequence &varExpPatSequence);
 
-}; // namespace MULTI350
+}; // namespace multi350
 
 #endif

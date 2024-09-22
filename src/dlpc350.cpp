@@ -1,7 +1,7 @@
 #include "multi350/dlpc350.hpp"
 #include "multi350/message.hpp"
 
-namespace MULTI350 {
+namespace multi350 {
 /**
  * getHardwareStatus
  * CMD2 : 0x1A, CMD3 : 0x0A
@@ -430,4 +430,4 @@ bool sendVarExpPatDisplayLUT(VarExpPatSequence &varExpPatSequence) {
   return true;
 }
 
-}; // namespace MULTI350
+}; // namespace multi350

@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-namespace MULTI350 {
+namespace multi350 {
 namespace USB {
 /// @brief uint8_t array managed by unique pointers
 using Buffer = std::unique_ptr<uint8_t, std::default_delete<uint8_t[]>>;
@@ -73,6 +73,6 @@ extern Buffer read();
 /// @return Number of bytes written
 extern int32_t write(Buffer &data);
 }; // namespace USB
-}; // namespace MULTI350
+}; // namespace multi350
 
 #endif

@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace MULTI350 {
+namespace multi350 {
 
 /// @brief Number of max possible retries on configuration attempt
 constexpr unsigned int maxRetries = 10;
@@ -203,5 +203,5 @@ protected:
   std::vector<Projector> projectors;
 };
 
-}; // namespace MULTI350
+}; // namespace multi350
 #endif

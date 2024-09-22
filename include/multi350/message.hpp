@@ -7,12 +7,12 @@
 #include <iostream>
 #include <utility>
 
-namespace MULTI350 {
+namespace multi350 {
 
-namespace Internal {
+namespace internal {
 constexpr size_t maxMessageDataSize = 512;
 constexpr bool verbose = false;
-}; // namespace Internal
+}; // namespace internal
 
 struct Message {
   enum class Type : bool { WRITE = 0, READ = 1 };
@@ -56,7 +56,7 @@ struct Message {
 
   union {
     uint16_t command;
-    uint8_t data[Internal::maxMessageDataSize];
+    uint8_t data[internal::maxMessageDataSize];
   };
 };
 
@@ -115,7 +115,7 @@ using MessageData = std::unique_ptr<T, std::default_delete<T[]>>;
 template <typename T = uint8_t> extern MessageData<T> transact(Message &msg) {
   int32_t result = write(msg);
 
-  if (Internal::verbose) {
+  if (internal::verbose) {
     std::cout << "W(" << msg.length << "): ";
     for (int i = 0; i < msg.length; ++i) {
       std::cout << std::hex << std::setw(4)
@@ -145,7 +145,7 @@ template <typename T = uint8_t> extern MessageData<T> transact(Message &msg) {
     MessageData<T> ret(new T[USB::packetSize]);
     memcpy(ret.get(), received->data, USB::packetSize);
 
-    if (Internal::verbose) {
+    if (internal::verbose) {
       std::cout << "R(" << received->length << "): ";
       for (int i = 0; i < received->length; ++i) {
         std::cout << std::hex << std::setw(4)
@@ -184,6 +184,6 @@ extern inline int32_t sendNoAckMessage(uint16_t cmd, ParamList &&...params) {
 
   return write(send);
 }
-}; // namespace MULTI350
+}; // namespace multi350
 
 #endif

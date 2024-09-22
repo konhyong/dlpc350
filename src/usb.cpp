@@ -1,7 +1,7 @@
 #include "multi350/usb.hpp"
 #include <iostream>
 
-namespace MULTI350 {
+namespace multi350 {
 namespace USB {
 
 hid_device *device = nullptr;
@@ -121,4 +121,4 @@ inline int32_t write(Buffer &data) {
   return writtenBytes;
 }
 }; // namespace USB
-}; // namespace MULTI350
+}; // namespace multi350

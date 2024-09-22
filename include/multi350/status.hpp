@@ -4,27 +4,27 @@
 #include <string>
 #include <vector>
 
-namespace MULTI350 {
-namespace Status {
-namespace Hardware {
+namespace multi350 {
+namespace status {
+namespace hardware {
 extern std::vector<std::string> initError;
 extern std::vector<std::string> DRCError;
 extern std::vector<std::string> forcedSwap;
 extern std::vector<std::string> sequenceAbort;
 extern std::vector<std::string> sequenceError;
-}; // namespace Hardware
+}; // namespace hardware
 
-namespace System {
+namespace system {
 extern std::vector<std::string> memoryTest;
-}; // namespace System
+}; // namespace system
 
-namespace Main {
+namespace main {
 extern std::vector<std::string> DMDParked;
 extern std::vector<std::string> sequenceRunning;
 extern std::vector<std::string> bufferFrozen;
 extern std::vector<std::string> gammaCorrection;
-}; // namespace Main
-}; // namespace Status
-}; // namespace MULTI350
+}; // namespace main
+}; // namespace status
+}; // namespace multi350
 
 #endif
