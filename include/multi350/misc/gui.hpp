@@ -18,53 +18,53 @@ struct Multi350GUI {
 
   multi350::VarExpPatSequence varExpPatSequences;
 
-  Trigger device_list{"device_list", ""};
-  Trigger device_open{"device_open", ""};
-  Trigger device_close{"device_close", ""};
+  Trigger device_list{"device_list", "multi350"};
+  Trigger device_open{"device_open", "multi350"};
+  Trigger device_close{"device_close", "multi350"};
 
-  ParameterInt proj0_index{"proj0_index", "", 0, 0, 3};
-  ParameterInt proj1_index{"proj1_index", "", 1, 0, 3};
-  ParameterInt proj2_index{"proj2_index", "", 2, 0, 3};
-  ParameterInt proj3_index{"proj3_index", "", 3, 0, 3};
+  ParameterInt proj0_index{"proj0_index", "multi350", 0, 0, 3};
+  ParameterInt proj1_index{"proj1_index", "multi350", 1, 0, 3};
+  ParameterInt proj2_index{"proj2_index", "multi350", 2, 0, 3};
+  ParameterInt proj3_index{"proj3_index", "multi350", 3, 0, 3};
   std::vector<unsigned int> usb_idx;
   std::vector<std::string> usb_names;
-  Trigger apply_indices{"apply_indices", ""};
-  Trigger save_indices{"save_indices", ""};
+  Trigger apply_indices{"apply_indices", "multi350"};
+  Trigger save_indices{"save_indices", "multi350"};
 
-  ParameterBool proj0_control{"proj0", "", true};
-  ParameterBool proj1_control{"proj1", "", true};
-  ParameterBool proj2_control{"proj2", "", true};
-  ParameterBool proj3_control{"proj3", "", true};
+  ParameterBool proj0_control{"proj0", "multi350", true};
+  ParameterBool proj1_control{"proj1", "multi350", true};
+  ParameterBool proj2_control{"proj2", "multi350", true};
+  ParameterBool proj3_control{"proj3", "multi350", true};
 
-  Trigger reset{"reset", ""};
-  Trigger print_status{"print_status", ""};
+  Trigger reset{"reset", "multi350"};
+  Trigger print_status{"print_status", "multi350"};
 
-  Trigger test_start{"test_start", ""};
-  Trigger test_stop{"test_stop", ""};
+  Trigger test_start{"test_start", "multi350"};
+  Trigger test_stop{"test_stop", "multi350"};
 
-  Trigger power_normal{"power_normal", ""};
-  Trigger power_standby{"power_standby", ""};
+  Trigger power_normal{"power_normal", "multi350"};
+  Trigger power_standby{"power_standby", "multi350"};
 
-  Trigger video_mode{"video_mode", ""};
-  Trigger varExpPat_start{"varExpPat_start", ""};
-  Trigger pattern_start{"pattern_start", ""};
-  Trigger pattern_stop{"pattern_stop", ""};
+  Trigger video_mode{"video_mode", "multi350"};
+  Trigger varExpPat_start{"varExpPat_start", "multi350"};
+  Trigger pattern_start{"pattern_start", "multi350"};
+  Trigger pattern_stop{"pattern_stop", "multi350"};
 
-  Trigger apply_led{"apply_led", ""};
-  Trigger save_led{"save_led", ""};
+  Trigger apply_led{"apply_led", "multi350"};
+  Trigger save_led{"save_led", "multi350"};
 
-  ParameterInt proj0_red{"proj0_red", "", 40, 0, 255};
-  ParameterInt proj0_green{"proj0_green", "", 90, 0, 255};
-  ParameterInt proj0_blue{"proj0_blue", "", 255, 0, 255};
-  ParameterInt proj1_red{"proj1_red", "", 40, 0, 255};
-  ParameterInt proj1_green{"proj1_green", "", 90, 0, 255};
-  ParameterInt proj1_blue{"proj1_blue", "", 255, 0, 255};
-  ParameterInt proj2_red{"proj2_red", "", 40, 0, 255};
-  ParameterInt proj2_green{"proj2_green", "", 90, 0, 255};
-  ParameterInt proj2_blue{"proj2_blue", "", 255, 0, 255};
-  ParameterInt proj3_red{"proj3_red", "", 40, 0, 255};
-  ParameterInt proj3_green{"proj3_green", "", 90, 0, 255};
-  ParameterInt proj3_blue{"proj3_blue", "", 255, 0, 255};
+  ParameterInt proj0_red{"proj0_red", "multi350", 40, 0, 255};
+  ParameterInt proj0_green{"proj0_green", "multi350", 90, 0, 255};
+  ParameterInt proj0_blue{"proj0_blue", "multi350", 255, 0, 255};
+  ParameterInt proj1_red{"proj1_red", "multi350", 40, 0, 255};
+  ParameterInt proj1_green{"proj1_green", "multi350", 90, 0, 255};
+  ParameterInt proj1_blue{"proj1_blue", "multi350", 255, 0, 255};
+  ParameterInt proj2_red{"proj2_red", "multi350", 40, 0, 255};
+  ParameterInt proj2_green{"proj2_green", "multi350", 90, 0, 255};
+  ParameterInt proj2_blue{"proj2_blue", "multi350", 255, 0, 255};
+  ParameterInt proj3_red{"proj3_red", "multi350", 40, 0, 255};
+  ParameterInt proj3_green{"proj3_green", "multi350", 90, 0, 255};
+  ParameterInt proj3_blue{"proj3_blue", "multi350", 255, 0, 255};
 
   // TODO: change file to std::file to handle paths
   PresetHandler preset_currents{"presets/currents", true};
